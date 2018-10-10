@@ -102,3 +102,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# datas
+data/external/*.csv
+data/external/*.json

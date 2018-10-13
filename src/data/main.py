@@ -8,7 +8,7 @@ from MyTokenize import MyTokenize
 def main():
 	tweets = pd.read_csv('data/external/csv_datas_full.csv', sep = '\t', low_memory=False)
 
-	tweets = tweets[:10]
+	tweets = tweets[:50]
 
 	mentions = ReadNestedList(tweets, tweets['tweet_user_mentions_list'], "mentions")
 	mentions.read().DF().computeGrpDF()
@@ -23,10 +23,16 @@ def main():
 	my_tokenize = MyTokenize(tweets, hashtags.grpDF, mentions.grpDF)
 	print(my_tokenize.tweets.head())
 
+	logger = logging.getLogger(__name__)
+	logger.info('processTokenize')
+
 	my_tokenize.processTokenize()
-	for doc in my_tokenize.docs:
-		print(doc.text)
+
 	print(my_tokenize.tweets.head())
+	print(my_tokenize.tokens)
+
+	logger = logging.getLogger(__name__)
+	logger.info('Fin')
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

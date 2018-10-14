@@ -2,6 +2,7 @@ import spacy
 import pandas as pd
 from spacy.matcher import Matcher
 from spacy.tokens import Token
+import re
 
 class MyTokenize:
 
@@ -29,10 +30,10 @@ class MyTokenize:
 
 
 	def initHashtags(self, threshold):
-		self.hashtags_arr = self.hashtags[self.hashtags['count'] <= threshold]['hashtags_lower_case']
+		self.hashtags_arr = self.hashtags[self.hashtags['count'] <= threshold]['hashtags_lower_case'].tolist()
 
 	def initMentions(self, threshold):
-		self.mentions_arr = self.mentions[self.mentions['count'] <= threshold]['mentions_lower_case']
+		self.mentions_arr = self.mentions[self.mentions['count'] <= threshold]['mentions_lower_case'].tolist()
 
 	def processTokenize(self):
 		pretty_tweet = list()
@@ -41,7 +42,7 @@ class MyTokenize:
 		## pour flagger
 		## - les hashtags
 		## - les mentions
-		## - les ...
+		## - les urls
 		hashtag_merger = HashtagMerger(self.nlp)
 		self.nlp.add_pipe(hashtag_merger, last = True) 
 
@@ -55,19 +56,26 @@ class MyTokenize:
 
 			token_to_return = list()
 			for token in doc:
-				if token._.is_hashtag:
-					if token.text in 
+				## url
+				if token.like_url:
+					pass
+				## hashtags
+				elif token._.is_hashtag:
+					if token.text[1:] in self.hashtags_arr:
+						token_to_return.append("_HASHTAG_")
+					else:
+						token_to_return.append(token.text)
+				## mentions
+				elif re.compile('^@.*').match(token.text):
+					if token.text[1:] in self.mentions_arr:
+						token_to_return.append("_MENTION_")
+					else:
+						token_to_return.append(token.text)
+				else:
+					token_to_return.append(token.text)
 
-
-			self.tokens.append([token.text for token in doc])
-			pretty_tweet.append(doc.text)
-
-		tmp_tokens = list()	
-		for tokens in self.tokens:
-			for token in tokens:
-				if token.token in self.hashtags_arr
-					tmp_tokens.append("HASHTAG")
-
+			self.tokens.append(token_to_return)
+			pretty_tweet.append(' '.join(token_to_return))
 
 		self.tweets.loc[:, 'pretty_tweet_text'] = pretty_tweet
 
@@ -86,7 +94,7 @@ class HashtagMerger(object):
             spans.append(doc[start:end])
         for span in spans:
             span.merge()
-            print(len(span))
             for token in span:
                 token._.is_hashtag = True
         return doc
+

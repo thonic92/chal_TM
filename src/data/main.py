@@ -8,7 +8,6 @@ from MyTokenize import MyTokenize
 def main():
 	tweets = pd.read_csv('data/external/csv_datas_full.csv', sep = '\t', low_memory=False)
 
-	tweets = tweets[:50]
 
 	mentions = ReadNestedList(tweets, tweets['tweet_user_mentions_list'], "mentions")
 	mentions.read().DF().computeGrpDF()
@@ -20,6 +19,8 @@ def main():
 	tmp = hashtags.grpDF.head()
 	print(tmp)
 
+	tweets = tweets[:50]
+	
 	my_tokenize = MyTokenize(tweets, hashtags.grpDF, mentions.grpDF)
 	print(my_tokenize.tweets.head())
 

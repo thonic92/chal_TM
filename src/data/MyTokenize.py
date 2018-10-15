@@ -3,6 +3,7 @@ import pandas as pd
 from spacy.matcher import Matcher
 from spacy.tokens import Token
 import re
+import unicodedata
 
 class MyTokenize:
 
@@ -27,7 +28,7 @@ class MyTokenize:
 	def initTweets(self):
 		self.tweets = self.tweets[['tweet_id', 'tweet_text']]
 		self.tweets.loc[:, 'tweet_text'] = self.tweets['tweet_text'].str.lower()
-
+		self.tweets.loc[:, 'tweet_text'] = self.tweets['tweet_text'].apply(lambda t: unicodedata.normalize('NFD', t).encode('ascii', 'ignore').decode('utf-8'))
 
 	def initHashtags(self, threshold):
 		self.hashtags_arr = self.hashtags[self.hashtags['count'] <= threshold]['hashtags_lower_case'].tolist()
@@ -71,6 +72,9 @@ class MyTokenize:
 						token_to_return.append("_MENTION_")
 					else:
 						token_to_return.append(token.text)
+				## guillemets et blancs
+				elif re.compile('^("|\s)+$').match(token.text):
+					pass
 				else:
 					token_to_return.append(token.text)
 

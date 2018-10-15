@@ -7,6 +7,7 @@ from MyTokenize import MyTokenize
 
 def main():
 	tweets = pd.read_csv('data/external/csv_datas_full.csv', sep = '\t', low_memory=False)
+	tweets = tweets[-tweets['tweet_text'].str.contains('(h|H)idalgo')]
 
 
 	mentions = ReadNestedList(tweets, tweets['tweet_user_mentions_list'], "mentions")
@@ -19,7 +20,7 @@ def main():
 	tmp = hashtags.grpDF.head()
 	print(tmp)
 
-	tweets = tweets[:50]
+	# tweets = tweets[:100]
 	
 	my_tokenize = MyTokenize(tweets, hashtags.grpDF, mentions.grpDF)
 	print(my_tokenize.tweets.head())
@@ -30,7 +31,10 @@ def main():
 	my_tokenize.processTokenize()
 
 	print(my_tokenize.tweets.head())
-	print(my_tokenize.tokens)
+	# print(my_tokenize.tokens)
+
+	my_tokenize.tweets.to_csv('data/interim/tweets.csv')
+	print(my_tokenize.tweets['pretty_tweet_text'].apply(len).sum())
 
 	logger = logging.getLogger(__name__)
 	logger.info('Fin')

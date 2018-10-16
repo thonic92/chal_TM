@@ -26,7 +26,7 @@ class MyTokenize:
 		self.tokens = list()
 
 		self.initTweets()
-		self.initHashtags(200)
+		self.initHashtags(500)
 		self.initMentions(200)
 
 
@@ -49,6 +49,8 @@ class MyTokenize:
 		## normalement on pourrait utiliser la liste des hashtags mais bof... 
 		## attention aux url à la place de mot (mais rare car url minifiee sans sharp)
 		self.tweets.loc[:, 'tweet_text_init'] = self.tweets['tweet_text_init'].apply(lambda t: re.sub('(?<=\S)#(?=\S)', ' #', t))
+		## ajouter les bons espaces sur les mentions mot@mentions => mot @hastags
+		self.tweets.loc[:, 'tweet_text_init'] = self.tweets['tweet_text_init'].apply(lambda t: re.sub('(?<=\S)@(?=\S)', ' @', t))
 		## ajout les bons espace entre les mot et les urls motURL => mot url
 		## je ne veux pas les supprimer tout de suite
 		self.tweets.loc[:, 'tweet_text_init'] = self.tweets['tweet_text_init'].apply(lambda t: re.sub("(?<=\S)(?={})".format(self.url_regex), ' ', t))

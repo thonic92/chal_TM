@@ -4,6 +4,8 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 from ReadNestedList import ReadNestedList
 from MyTokenize import MyTokenize
+import json
+
 
 def main():
 	tweets = pd.read_csv('data/external/csv_datas_full.csv', sep = '\t', low_memory=False)
@@ -23,18 +25,20 @@ def main():
 	# tweets = tweets[:100]
 	
 	my_tokenize = MyTokenize(tweets, hashtags.grpDF, mentions.grpDF)
-	print(my_tokenize.tweets.head())
 
 	logger = logging.getLogger(__name__)
 	logger.info('processTokenize')
 
 	my_tokenize.processTokenize()
 
-	print(my_tokenize.tweets.head())
+	# print(my_tokenize.tweets.head())
 	# print(my_tokenize.tokens)
 
 	my_tokenize.tweets.to_csv('data/interim/tweets.csv')
 	print(my_tokenize.tweets['pretty_tweet_text'].apply(len).sum())
+
+	with open('data/interim/tokens.json', 'w') as outfile:
+	    json.dump(my_tokenize.tokens, outfile)
 
 	logger = logging.getLogger(__name__)
 	logger.info('Fin')

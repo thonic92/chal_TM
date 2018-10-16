@@ -7,8 +7,8 @@ from MyTokenize import MyTokenize
 
 def main():
 	tweets = pd.read_csv('data/external/csv_datas_full.csv', sep = '\t', low_memory=False)
-	tweets = tweets[-tweets['tweet_text'].str.contains('(h|H)idalgo')]
 
+	# tweets = tweets[-tweets['tweet_text'].str.contains('(h|H)idalgo')]
 
 	mentions = ReadNestedList(tweets, tweets['tweet_user_mentions_list'], "mentions")
 	mentions.read().DF().computeGrpDF()

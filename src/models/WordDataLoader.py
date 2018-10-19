@@ -3,13 +3,21 @@ from keras.utils import to_categorical
 
 class WordDataLoader:
 
-	def __init__(self, word_data, batch_size, step_per_epoch = None):
+	def __init__(self, load_type, word_data, batch_size, step_per_epoch = None):
 		self.word_data = word_data
 		self.batch_size = batch_size
 		self.step_per_epoch = step_per_epoch
 		self.current_idx = 0
+		self.type = load_type
 
 	def generate(self):
+		if self.type == 'id':
+			return self.generateId()
+		elif self.type == 'array':
+			return self.generateArray()
+
+
+	def generateArray(self):
 
 		max_len = max([len(el) for el in self.word_data.token_final])
 
@@ -37,6 +45,35 @@ class WordDataLoader:
 				self.current_idx += 1
 
 			yield X, Y
+
+	def generateId(self):
+		max_len = max([len(el) for el in self.word_data.token_final])
+
+		while True:
+			X = np.full((self.batch_size, max_len), self.word_data.ref_word_to_id[self.word_data.sentence_token_stop])
+			# Y = np.full((self.batch_size, max_len), self.word_data.ref_word_to_id[self.word_data.sentence_token_stop])
+			Y = np.full((self.batch_size, max_len, self.word_data.getVocabularyLength()), self.word_data.ref_word_to_id[self.word_data.sentence_token_stop])
+
+			for i in range(self.batch_size):
+				if self.current_idx >= len(self.word_data.token_final):
+					self.current_idx = 0
+
+				x = self.word_data.token_final[self.current_idx][:-1]
+				x = [self.word_data.ref_word_to_id[word] for word in x]
+				X[i, :(len(x)) ] = x
+
+				# y = self.word_data.token_final[self.current_idx][1:]
+				# y = [self.word_data.ref_word_to_id[word] for word in y]
+				# Y[i, :(len(y)) ] = y
+
+				y = self.word_data.token_final[self.current_idx][1:]
+				y = [self.word_data.ref_word_to_id[word] for word in y]
+				y = to_categorical(y, num_classes=self.word_data.getVocabularyLength())
+				Y[i, :(y.shape[0]), : ] = y
+
+				self.current_idx += 1
+			yield X, Y
+
 
 	def stepPerEpoch(self):
 		if self.step_per_epoch is None:

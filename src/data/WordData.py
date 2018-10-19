@@ -51,6 +51,9 @@ class WordData:
 			self.token_final.append(token_final)
 
 		return self
+
+	def getFlatFinalToken(self):
+		return [token for x in self.token_final for token in x]
 		
 	def getVocabularyLength(self):
 		return len(self.token_keep)

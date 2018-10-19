@@ -2,7 +2,7 @@ import spacy
 import pandas as pd
 from spacy.matcher import Matcher
 from spacy.tokens import Token
-from HashtagMerger import HashtagMerger
+# from HashtagMerger import HashtagMerger
 import re
 import unicodedata
 import html
@@ -75,8 +75,6 @@ class MyTokenize:
 		## - les hashtags
 		## - les mentions
 		## - les urls
-		hashtag_merger = HashtagMerger(self.nlp)
-		self.nlp.add_pipe(hashtag_merger, last = True) 
 
 		for doc in self.nlp.pipe(self.tweets['tweet_text_init'], n_threads = 3, batch_size = 128, disable=['tagger', 'parser']):
 

@@ -4,6 +4,7 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 from ReadNestedList import ReadNestedList
 from MyTokenize import MyTokenize
+from HashtagMerger import HashtagMerger
 import json
 
 
@@ -25,6 +26,9 @@ def main():
 	# tweets = tweets[:100]
 	
 	my_tokenize = MyTokenize(tweets, hashtags.grpDF, mentions.grpDF)
+
+	hashtag_merger = HashtagMerger(my_tokenize.nlp)
+	my_tokenize.nlp.add_pipe(hashtag_merger, last = True) 
 
 	logger = logging.getLogger(__name__)
 	logger.info('processTokenize')

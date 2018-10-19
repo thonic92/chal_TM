@@ -2,6 +2,7 @@ import spacy
 import pandas as pd
 from spacy.matcher import Matcher
 from spacy.tokens import Token
+from HashtagMerger import HashtagMerger
 import re
 import unicodedata
 import html
@@ -131,23 +132,4 @@ class MyTokenize:
 		self.tweets.loc[:, 'count_url'] = column_count_url
 		self.tweets.loc[:, 'count_hashtag'] = column_count_hashtag
 		self.tweets.loc[:, 'count_mention'] = column_count_mention
-
-
-class HashtagMerger(object):
-    def __init__(self, nlp):
-        
-        Token.set_extension('is_hashtag', default=None)
-        self.matcher = Matcher(nlp.vocab)
-        self.matcher.add('HASHTAG', None, [{'ORTH': '#'}, {'IS_ASCII': True}])
-
-    def __call__(self, doc):
-        matches = self.matcher(doc)
-        spans = []
-        for match_id, start, end in matches:
-            spans.append(doc[start:end])
-        for span in spans:
-            span.merge()
-            for token in span:
-                token._.is_hashtag = True
-        return doc
 

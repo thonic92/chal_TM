@@ -12,7 +12,6 @@ class TweetGenerator:
 			from array of one hot
 		"""
 		if mot_debut is None:
-			# mot_debut = to_categorical(self.word_data.ref_word_to_id[self.word_data.sentence_token_start], self.word_data.getVocabularyLength())
 			mot_debut = self.word_data.wordToId(self.word_data.sentence_token_start)
 
 		mot_debut = mot_debut.reshape(1, 1, self.word_data.getVocabularyLength())
@@ -24,12 +23,12 @@ class TweetGenerator:
 
 		return word, predict
 
-	def tweet(self, mot_debut = None, batch_size = 1):
+	def tweet(self, mot_debut = None, batch_size = 1, stop=244):
 
 		sent = list()
 		pred = mot_debut
 
-		while True:
+		for i in range(stop):
 			word, pred = self.nextWord(pred, batch_size)
 			sent.append(word)
 			if word == self.word_data.sentence_token_stop:

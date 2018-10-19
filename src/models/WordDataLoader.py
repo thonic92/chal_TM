@@ -3,15 +3,16 @@ from keras.utils import to_categorical
 
 class WordDataLoader:
 
-	def __init__(self, word_data, batch_size):
+	def __init__(self, word_data, batch_size, step_per_epoch = None):
 		self.word_data = word_data
 		self.batch_size = batch_size
+		self.step_per_epoch = step_per_epoch
 		self.current_idx = 0
 
 	def generate(self):
 
 		max_len = max([len(el) for el in self.word_data.token_final])
-		
+
 		while True:
 			X = np.zeros((self.batch_size, max_len, self.word_data.getVocabularyLength()))
 			Y = np.zeros((self.batch_size, max_len, self.word_data.getVocabularyLength()))
@@ -38,5 +39,6 @@ class WordDataLoader:
 			yield X, Y
 
 	def stepPerEpoch(self):
-		return 500
-		return len(self.word_data.token_final) // self.batch_size
+		if self.step_per_epoch is None:
+			return len(self.word_data.token_final) // self.batch_size
+		return self.step_per_epoch

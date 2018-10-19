@@ -1,5 +1,6 @@
 import pandas as pd
 from keras.utils import to_categorical
+import numpy as np
 
 ## Class pour génrer les tokens en mode flat
 ## - virer les tokens inutiles
@@ -58,6 +59,19 @@ class WordData:
 		self.ref_word_to_id = dict([(w, i) for i,w in enumerate(self.token_keep)])
 
 		return self
+
+	def wordToId(self, word):
+		return to_categorical(self.ref_word_to_id[word], self.getVocabularyLength())
+
+
+	def idToWord(self, id):
+		return self.token_keep[id]
+
+	def probaToWord(self, proba):
+		if np.sum(proba) == 0:
+			proba = self.wordToId(self.sentence_token_stop)
+		return self.idToWord(np.argmax(proba))
+
 
 	@staticmethod
 	def one_hot(words, vocabulary):

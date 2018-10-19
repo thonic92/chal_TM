@@ -5,7 +5,7 @@ from spacy.matcher import Matcher
 class HashtagMerger(object):
     def __init__(self, nlp):
         
-        Token.set_extension('is_hashtag', default=None)
+        Token.set_extension('is_hashtag', default=None, force=True)
         self.matcher = Matcher(nlp.vocab)
         self.matcher.add('HASHTAG', None, [{'ORTH': '#'}, {'IS_ASCII': True}])
 

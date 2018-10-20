@@ -32,7 +32,7 @@ class TweetGenerator:
 		predict = self.model.model.predict(mot_debut, batch_size = batch_size)
 		predict = predict[-1][-1, :]
 
-		word = self.word_data.probaToWord(predict, idx = 1)
+		word = self.word_data.probaToWord(predict, idx = 0)
 		word_id = self.word_data.ref_word_to_id[word]
 
 		return word, word_id, predict

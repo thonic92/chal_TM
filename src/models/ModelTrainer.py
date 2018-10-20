@@ -14,7 +14,7 @@ class ModelTrainer:
 		self.use_multiprocessing = use_multiprocessing
 
 		self.csv_logger = CSVLogger('{}/training.log'.format(self.model.save_directory))
-		self.checkpointer = ModelCheckpoint(filepath=self.model.save_directory+'/model-{epoch:02d}.hdf5', verbose = 1, period = 5)
+		self.checkpointer = ModelCheckpoint(filepath=self.model.save_directory+'/model-{epoch:02d}.hdf5', verbose = 1, period = 20)
 
 		callbacks.extend([self.csv_logger, self.checkpointer])
 		self.callbacks = callbacks

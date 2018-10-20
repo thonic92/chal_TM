@@ -27,26 +27,31 @@ class TweetGenerator:
 		"""
 			from array of one hot
 		"""
-		if mot_debut is None:
-			mot_debut = self.word_data.ref_word_to_id[self.word_data.sentence_token_start]
-
-		mot_debut = np.array(mot_debut).reshape(batch_size, 1)
+		mot_debut = mot_debut.reshape(batch_size, mot_debut.size)
 
 		predict = self.model.model.predict(mot_debut, batch_size = batch_size)
 		predict = predict[-1][-1, :]
 
-		word = self.word_data.probaToWord(predict)
+		word = self.word_data.probaToWord(predict, idx = 1)
 		word_id = self.word_data.ref_word_to_id[word]
 
 		return word, word_id, predict
 
 	def tweet(self, mot_debut = None, batch_size = 1, stop=244):
+		# print("ok")
 
 		sent = list()
-		word_id = mot_debut
+		if mot_debut is None:
+			mot_debut = np.array(self.word_data.ref_word_to_id[self.word_data.sentence_token_start])
+		else:
+			for w in mot_debut:
+				sent.append(self.word_data.idToWord(w))
+		
+		np_id_sent = mot_debut
 
 		for i in range(stop):
-			word, word_id, pred = self.nextWord(word_id, batch_size)
+			word, word_id, pred = self.nextWord(np_id_sent, batch_size)
+			np_id_sent = np.append(np_id_sent, word_id)
 			sent.append(word)
 			if word == self.word_data.sentence_token_stop:
  				break

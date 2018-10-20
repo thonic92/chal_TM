@@ -70,10 +70,11 @@ class WordData:
 	def idToWord(self, id):
 		return self.token_keep[id]
 
-	def probaToWord(self, proba):
+	def probaToWord(self, proba, idx = 0):
 		if np.sum(proba) == 0:
 			proba = self.wordToId(self.sentence_token_stop)
-		return self.idToWord(np.argmax(proba))
+		proba_argsort = np.argsort(-proba)
+		return self.idToWord(proba_argsort[idx])
 
 
 	@staticmethod

@@ -3,7 +3,7 @@ from keras.callbacks import ModelCheckpoint, CSVLogger
 
 class ModelTrainer:
 
-	def __init__(self, model, data_loader, epochs, verbose = 1, initial_epoch = 0, workers=1, use_multiprocessing=False):
+	def __init__(self, model, data_loader, epochs, verbose = 1, initial_epoch = 0, workers=1, use_multiprocessing=False, callbacks=[]):
 		self.model = model
 		self.data_loader = data_loader
 
@@ -16,6 +16,9 @@ class ModelTrainer:
 		self.csv_logger = CSVLogger('{}/training.log'.format(self.model.save_directory))
 		self.checkpointer = ModelCheckpoint(filepath=self.model.save_directory+'/model-{epoch:02d}.hdf5', verbose = 1, period = 5)
 
+		callbacks.extend([self.csv_logger, self.checkpointer])
+		self.callbacks = callbacks
+
 	def train(self):
 
 		self.model.model.fit_generator(
@@ -24,7 +27,7 @@ class ModelTrainer:
 			epochs = self.epochs,
 			verbose = self.verbose,
 			initial_epoch = self.initial_epoch,
-			callbacks = [self.checkpointer, self.csv_logger],
+			callbacks = self.callbacks,
 			workers = self.workers,
 			use_multiprocessing = self.use_multiprocessing
 		)

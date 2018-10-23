@@ -1,24 +1,14 @@
+from src.models.AbstractModel import AbstractModel
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Activation, Embedding, Dropout, TimeDistributed
 from keras.layers import LSTM
-
-class AbstractModel:
-	def __init__(self, save_directory):
-		self.save_directory = save_directory
-
-	def save(self):
-		self.model.save('{}/final_model.hdf5'.format(self.save_directory))
-
-
-	def load(self, which = 'final_model'):
-		self.model = load_model('{}/{}.hdf5'.format(self.save_directory, which))
 
 
 class simpleLSTMModel(AbstractModel):
 
 	def __init__(self, save_directory, vocabulary_size, lstm_hidden_size, batch_input_shape):
 
-		super(self, save_directory)
+		super().__init__(save_directory)
 
 		self.vocabulary_size = vocabulary_size
 		self.lstm_hidden_size = lstm_hidden_size

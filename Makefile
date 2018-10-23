@@ -17,6 +17,28 @@ HAS_CONDA=True
 endif
 
 #################################################################################
+# USER COMMANDS                                                                 #
+#################################################################################
+
+word2vec:
+	$(PYTHON_INTERPRETER) src/process_word2vec.py
+
+
+#################################################################################
+# FLOYD USER COMMANDS                                                           #
+#################################################################################
+
+finstall:
+	# $(PYTHON_INTERPRETER) setup.py install
+	pip install . -e
+
+fword2vec: finstall
+	$(PYTHON_INTERPRETER) src/process_word2vec.py --tokens_dir=prise6/datasets/chal_tm_tokens/1 --save_dir=/output/
+
+frun:
+	floyd run --cpu --env tensorflow-1.10 'make fword2vec'
+
+#################################################################################
 # COMMANDS                                                                      #
 #################################################################################
 

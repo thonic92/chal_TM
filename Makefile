@@ -20,8 +20,14 @@ endif
 # USER COMMANDS                                                                 #
 #################################################################################
 
+tokenize:
+	$(PYTHON_INTERPRETER) src/data/main.py
+
 word2vec:
-	$(PYTHON_INTERPRETER) src/process_word2vec.py
+	$(PYTHON_INTERPRETER) src/process_word2vec.py run data/interim models/word2vec models/word2vec 0 100 4 200 800 3
+
+word2vec_s:
+	$(PYTHON_INTERPRETER) src/process_word2vec.py save_vectors data/interim models/word2vec models/word2vec 0 100 4 200 800 3 final_model
 
 
 #################################################################################
@@ -29,14 +35,16 @@ word2vec:
 #################################################################################
 
 finstall:
-	# $(PYTHON_INTERPRETER) setup.py install
-	pip install . -e
+	$(PYTHON_INTERPRETER) setup.py install
 
 fword2vec: finstall
-	$(PYTHON_INTERPRETER) src/process_word2vec.py --tokens_dir=prise6/datasets/chal_tm_tokens/1 --save_dir=/output/
+	$(PYTHON_INTERPRETER) src/process_word2vec.py /tokens /output 0 100 4 300 600 2
+
+fword2vec_s: finstall
+	$(PYTHON_INTERPRETER) src/process_word2vec.py save_vectors /tokens /output /dir_model 0 100 4 300 600 2 model-260
 
 frun:
-	floyd run --cpu --env tensorflow-1.10 'make fword2vec'
+	floyd run --cpu --env tensorflow-1.10 --data prise6/datasets/chal_tm_tokens/2:/tokens --data prise6/projects/chal_tm/16/output:/dir_model 'make fword2vec_s'
 
 #################################################################################
 # COMMANDS                                                                      #

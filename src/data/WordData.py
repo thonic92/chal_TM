@@ -8,7 +8,7 @@ import numpy as np
 
 class WordData:
 
-	def __init__(self, tokens, tweets, nb_keep):
+	def __init__(self, tokens, tweets, nb_keep, keep_unknown = True, start_and_stop = True):
 
 		self.tokens = tokens
 		self.tweets = tweets
@@ -19,6 +19,8 @@ class WordData:
 		self.sentence_token_start = '_SENTENCE_START_'
 		self.sentence_token_stop = '_SENTENCE_STOP_'
 		self.ref_word_to_id = None
+		self.start_and_stop = start_and_stop
+		self.keep_unknown = keep_unknown
 
 		self.initListToken()
 		self.truncate()
@@ -29,25 +31,35 @@ class WordData:
 		tokens_flat = [token for x in self.tokens for token in x]
 		tokens_df = pd.DataFrame(tokens_flat, columns = ['token'])
 
-		freq = tokens_df.groupby('token')['token'].count().reset_index(name = 'count').sort_values(['count'], ascending=False).head(self.nb_keep)
+		freq = tokens_df.groupby('token')['token'].count().reset_index(name = 'count').sort_values(['count'], ascending=False)
+		if self.nb_keep > 0:
+			freq = freq.head(self.nb_keep)
 		self.token_keep = freq['token'].tolist()
 
-		self.token_keep.append(self.sentence_token_start)
-		self.token_keep.append(self.sentence_token_stop)
-		self.token_keep.append(self.UNKNOWN)
+		if self.start_and_stop:
+			self.token_keep.append(self.sentence_token_start)
+			self.token_keep.append(self.sentence_token_stop)
+			self.token_keep.append(self.UNKNOWN)
 
 		return self
 
 	def truncate(self):
 		
 		for i, sentence in enumerate(self.tokens):
-			token_final = [self.sentence_token_start]
+			if self.start_and_stop:
+				token_final = [self.sentence_token_start]
+			else:
+				token_final = []
 			for token in sentence:
-				if token in self.token_keep:
-					token_final.append(token)
+				if self.nb_keep > 0 :
+					if token in self.token_keep:
+						token_final.append(token)
+					elif self.keep_unknown:
+						token_final.append(self.UNKNOWN)
 				else:
-					token_final.append(self.UNKNOWN)
-			token_final.append(self.sentence_token_stop)
+					token_final.append(token)
+			if self.start_and_stop:
+				token_final.append(self.sentence_token_stop)
 			self.token_final.append(token_final)
 
 		return self

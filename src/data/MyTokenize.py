@@ -25,6 +25,7 @@ class MyTokenize:
 		self.nlp = spacy.load(spacy_lang, disable=['tagger', 'parser'])
 
 		self.tokens = list()
+		self.lemma = list()
 
 		self.initTweets()
 		self.initHashtags(500)
@@ -85,6 +86,7 @@ class MyTokenize:
 			## on retraite les tokens
 
 			token_to_return = list()
+			lemma_to_return = list()
 			
 			count_url = 0
 			count_hashtag = 0
@@ -102,6 +104,8 @@ class MyTokenize:
 				## hashtags
 				elif token._.is_hashtag:
 					count_hashtag +=1
+					lemma_to_return.append(token.text[1:])
+
 					if token.text[1:] in self.hashtags_arr:
 						token_to_return.append("_HASHTAG_")
 					else:
@@ -109,6 +113,7 @@ class MyTokenize:
 				## mentions
 				elif re.compile('^@.*').match(token.text):
 					count_mention +=1
+					lemma_to_return.append(token.text[1:])
 					if token.text[1:] in self.mentions_arr:
 						token_to_return.append("_MENTION_")
 					else:
@@ -117,9 +122,13 @@ class MyTokenize:
 				elif re.compile('^("|\s)+$').match(token.text):
 					pass
 				else:
+					if not token.is_punct:
+						lemma_to_return.append(token.lemma_) 
+
 					token_to_return.append(token.text)
 
 			self.tokens.append(token_to_return)
+			self.lemma.append(lemma_to_return)
 			pretty_tweet.append(' '.join(token_to_return))
 
 			column_count_url.append(count_url)

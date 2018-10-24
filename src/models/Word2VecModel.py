@@ -2,6 +2,7 @@ from src.models.AbstractModel import AbstractModel
 from keras.models import Sequential
 from keras.layers import Dense, Lambda, Embedding
 import keras.backend as K
+from keras import optimizers
 
 class Word2VecModel(AbstractModel):
 
@@ -21,7 +22,9 @@ class Word2VecModel(AbstractModel):
 		model.add(Lambda(lambda x: K.mean(x, axis = 1), output_shape = (self.output_dim, )))
 		model.add(Dense(self.vocabulary_size, activation = 'softmax'))
 
-		model.compile(loss = 'categorical_crossentropy', optimizer = 'adadelta')
+		adam = optimizers.Adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999, epsilon = None, decay = 0, amsgrad = False)
+
+		model.compile(loss = 'categorical_crossentropy', optimizer = adam, metrics=['categorical_accuracy'])
 
 		self.model = model
 

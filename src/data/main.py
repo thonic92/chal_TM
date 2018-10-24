@@ -44,6 +44,9 @@ def main():
 	with open('data/interim/tokens.json', 'w') as outfile:
 	    json.dump(my_tokenize.tokens, outfile)
 
+	with open('data/interim/lemma.json', 'w') as outfile:
+	    json.dump(my_tokenize.lemma, outfile)
+
 	logger = logging.getLogger(__name__)
 	logger.info('Fin')
 

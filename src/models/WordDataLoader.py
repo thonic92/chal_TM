@@ -1,6 +1,7 @@
 import numpy as np
 from keras.utils import to_categorical, np_utils
 from keras.preprocessing import sequence
+import random
 
 class WordDataLoader:
 
@@ -126,12 +127,18 @@ class ContextWordDataLoader(WordDataLoader):
 
 		while True:
 
+			token_final = self.word_data.token_final
+			token_final = random.shuffle(token_final)
+
 			# for i in range(self.batch_size):
 			for tokens in self.word_data.token_final:
 
-				len_sen = len(tokens)
 				# le zero est reservé à "no data / pad"
 				tokens = [self.word_data.ref_word_to_id[token] + 1 for token  in tokens]
+
+				len_sen = len(tokens)
+				if len_sen <= 3:
+					pass
 
 				for index, token in enumerate(tokens):
 					
@@ -141,7 +148,8 @@ class ContextWordDataLoader(WordDataLoader):
 					debut_context = index - windows_size
 					fin_context = index + windows_size + 1
 
-					X.append([tokens[i] for i in range(debut_context, fin_context) if i >= 0 and i < len_sen and i != index])
+					# X.append([tokens[i] for i in range(debut_context, fin_context) if i >= 0 and i < len_sen and i != index])
+					X.append([tokens[i] for i in range(debut_context, fin_context) if i >= 0 and i < len_sen and i == index])
 					Y.append(token)
 
 					X = sequence.pad_sequences(X, maxlen = max_len)

@@ -1,3 +1,4 @@
+from keras.models import load_model
 
 class AbstractModel:
 	def __init__(self, save_directory):

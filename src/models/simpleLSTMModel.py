@@ -21,6 +21,8 @@ class simpleLSTMModel(AbstractModel):
 		model = Sequential()
 		model.add(Embedding(input_dim = self.vocabulary_size, output_dim = self.lstm_hidden_size, batch_input_shape = self.batch_input_shape))
 		model.add(LSTM(self.lstm_hidden_size, return_sequences=True))
+		model.add(LSTM(self.lstm_hidden_size, return_sequences=True))
+		model.add(Dropout(0.5))
 		model.add(TimeDistributed(Dense(self.vocabulary_size)))
 		model.add(Activation('softmax'))
 

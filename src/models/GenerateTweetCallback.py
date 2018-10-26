@@ -9,10 +9,10 @@ class GenerateTweetCallback(Callback):
 		self.model = None
 
 	def on_epoch_end(self, epoch, logs):
-		t = self.tweet_generator.tweet()
-		print(' '.join(t))
-		print("\n")
-		t = self.tweet_generator.randomTweet()
-		print(' '.join(t))
-		print("\n")
-
+		if epoch % 10 == 0:
+			t = self.tweet_generator.tweet(stop = 50)
+			print(' '.join(t))
+			print("\n")
+			t = self.tweet_generator.randomTweet(stop = 50)
+			print(' '.join(t))
+			print("\n")

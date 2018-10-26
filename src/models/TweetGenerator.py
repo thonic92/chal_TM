@@ -58,6 +58,6 @@ class TweetGenerator:
 
 		return sent
 
-	def randomTweet(self):
-		return self.tweet(np.array([np.random.randint(self.word_data.getVocabularyLength()-1)]))
+	def randomTweet(self, stop):
+		return self.tweet(np.array([np.random.randint(self.word_data.getVocabularyLength()-1)]), stop = stop)
 

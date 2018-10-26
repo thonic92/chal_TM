@@ -30,9 +30,11 @@ class IdWordDataLoader(WordDataLoader):
 	def generate(self):
 		max_len = max([len(el) for el in self.word_data.token_final])
 
-		tokens_flat = self.word_data.getFlatFinalToken()
 
 		while True:
+			random.shuffle(self.word_data.token_final)
+			tokens_flat = self.word_data.getFlatFinalToken()
+
 			X = np.zeros((self.batch_size, self.num_steps))
 			Y = np.zeros((self.batch_size, self.num_steps, self.word_data.getVocabularyLength()))
 

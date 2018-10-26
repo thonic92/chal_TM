@@ -30,7 +30,10 @@ word2vec_s:
 	$(PYTHON_INTERPRETER) src/process_word2vec.py save_vectors data/interim models/word2vec models/word2vec 0 100 4 200 800 3 final_model
 
 simple_lstm:
-	$(PYTHON_INTERPRETER) src/process_simple_lstm.py run data/interim models/simpleLSTMModel/version2 models/simpleLSTMModel/version2 8000 100 20 5 4 2 100
+	$(PYTHON_INTERPRETER) src/process_simple_lstm.py run data/interim models/simpleLSTMModel/version3 models/simpleLSTMModel/version3 8000 100 20 5 4 10 100
+
+lstm_sent:
+	$(PYTHON_INTERPRETER) src/process_lstm_sent.py run data/interim models/lstm_sent/version1 models/lstm_sent/version1 6676 100 4 10 100
 
 
 #################################################################################

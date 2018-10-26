@@ -58,11 +58,13 @@ class SentenceIdWordDataLoader(WordDataLoader):
 
 	def generate(self):
 		max_len = max([len(el) for el in self.word_data.token_final])
-		print(max_len)
+
 		while True:
 
-			X = np.zeros((self.batch_size, max_len))
-			Y = np.zeros((self.batch_size, max_len))
+			X = np.full((self.batch_size, max_len), self.word_data.ref_word_to_id[self.word_data.sentence_token_stop])
+			Y = np.tile(to_categorical(self.word_data.ref_word_to_id[self.word_data.sentence_token_stop], num_classes = self.word_data.getVocabularyLength()), (self.batch_size, max_len, 1))
+
+			random.shuffle(self.word_data.token_final)
 
 			for i in range(self.batch_size):
 				if self.current_idx >= len(self.word_data.token_final):
@@ -74,7 +76,8 @@ class SentenceIdWordDataLoader(WordDataLoader):
 
 				y = self.word_data.token_final[self.current_idx][1:]
 				y = [self.word_data.ref_word_to_id[word] for word in y]
-				Y[i, :(len(x))] = y
+				y = to_categorical(y, num_classes = self.word_data.getVocabularyLength())
+				Y[i, :(len(x)), :] = y
 
 				self.current_idx += 1
 

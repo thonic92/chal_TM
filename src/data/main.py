@@ -38,14 +38,14 @@ def main():
 	# print(my_tokenize.tweets.head())
 	# print(my_tokenize.tokens)
 
-	my_tokenize.tweets.to_csv('data/interim/tweets.csv')
+	my_tokenize.tweets.to_csv('data/interim/tweets_2.csv')
 	print(my_tokenize.tweets['pretty_tweet_text'].apply(len).sum())
 
-	with open('data/interim/tokens.json', 'w') as outfile:
+	with open('data/interim/tokens_2.json', 'w') as outfile:
 	    json.dump(my_tokenize.tokens, outfile)
 
-	with open('data/interim/lemma.json', 'w') as outfile:
-	    json.dump(my_tokenize.lemma, outfile)
+	# with open('data/interim/lemma.json', 'w') as outfile:
+	    # json.dump(my_tokenize.lemma, outfile)
 
 	logger = logging.getLogger(__name__)
 	logger.info('Fin')

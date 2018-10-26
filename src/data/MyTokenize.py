@@ -28,8 +28,8 @@ class MyTokenize:
 		self.lemma = list()
 
 		self.initTweets()
-		self.initHashtags(500)
-		self.initMentions(200)
+		self.initHashtags(20)
+		self.initMentions(20)
 
 
 	def initTweets(self):
@@ -70,6 +70,8 @@ class MyTokenize:
 		column_count_url = list()
 		column_count_hashtag = list()
 		column_count_mention = list()
+		column_count_hashtag_ano = list()
+		column_count_mention_ano = list()
 
 		## partie token via spaCy
 		## pour flagger
@@ -92,6 +94,9 @@ class MyTokenize:
 			count_hashtag = 0
 			count_mention = 0
 
+			count_hashtag_ano = 0
+			count_mention_ano = 0
+
 			for token in doc:
 				## url
 				if token.like_url:
@@ -107,6 +112,7 @@ class MyTokenize:
 					lemma_to_return.append(token.text[1:])
 
 					if token.text[1:] in self.hashtags_arr:
+						count_hashtag_ano +=1
 						token_to_return.append("_HASHTAG_")
 					else:
 						token_to_return.append(token.text)
@@ -115,6 +121,7 @@ class MyTokenize:
 					count_mention +=1
 					lemma_to_return.append(token.text[1:])
 					if token.text[1:] in self.mentions_arr:
+						count_mention_ano +=1
 						token_to_return.append("_MENTION_")
 					else:
 						token_to_return.append(token.text)
@@ -133,10 +140,14 @@ class MyTokenize:
 
 			column_count_url.append(count_url)
 			column_count_hashtag.append(count_hashtag)
+			column_count_hashtag_ano.append(count_hashtag_ano)
 			column_count_mention.append(count_mention)
+			column_count_mention_ano.append(count_mention_ano)
 
 		self.tweets.loc[:, 'pretty_tweet_text'] = pretty_tweet
 		self.tweets.loc[:, 'count_url'] = column_count_url
 		self.tweets.loc[:, 'count_hashtag'] = column_count_hashtag
 		self.tweets.loc[:, 'count_mention'] = column_count_mention
+		self.tweets.loc[:, 'count_hashtag_ano'] = column_count_hashtag_ano
+		self.tweets.loc[:, 'count_mention_ano'] = column_count_mention_ano
 

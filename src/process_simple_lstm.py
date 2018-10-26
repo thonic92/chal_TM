@@ -3,6 +3,7 @@ import click
 import logging
 from pathlib import Path
 import json
+import pandas as pd
 
 from src.data.WordData import WordData
 from src.models.simpleLSTMModel import simpleLSTMModel
@@ -35,12 +36,19 @@ def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size,
 
 	## ------ lecture des tokens ------
 	logger.info('processTokenize')
-	with open('{}/tokens.json'.format(tokens_dir)) as f:
+	with open('{}/tokens_2.json'.format(tokens_dir)) as f:
 		tokens = json.load(f)
 
+	## ------ lecture des tweets.csv ------
+	tweets_tokens = pd.read_csv('{}/tweets_2.csv'.format(tokens_dir))
+	tokens_ss_pbm = tweets_tokens[(tweets_tokens.count_hashtag_ano == 0)  & (tweets_tokens.count_mention_ano == 0)].index
+
     ## ------ lecture des tokens à garder ------
-	with open('{}/tokens_id_keep.json'.format(tokens_dir)) as f:
+	with open('{}/tokens_id_keep_2.json'.format(tokens_dir)) as f:
 		tokens_id_keep = json.load(f)
+
+	tokens_id_keep = list(set(tokens_id_keep) & set(tokens_ss_pbm))
+	print(len(tokens_id_keep))
 
 	## ------ Class WordData ------
 	logger.info('Class WordData')

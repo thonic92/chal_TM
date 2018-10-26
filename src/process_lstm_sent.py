@@ -7,7 +7,7 @@ import pandas as pd
 
 from src.data.WordData import WordData
 from src.models.simpleLSTMModel import simpleLSTMModel
-from src.models.WordDataLoader import SentenceIdWordDataLoader
+from src.models.WordDataLoader import OneSentenceIdWordDataLoader
 from src.models.ModelTrainer import ModelTrainer
 from src.models.TweetGenerator import TweetGenerator
 from src.models.GenerateTweetCallback import GenerateTweetCallback
@@ -23,7 +23,7 @@ from keras.callbacks import LambdaCallback
 
 @click.argument('lstm_hidden_size', type=int, default = 50)
 
-@click.argument('batch', type=int, default = 4)
+@click.argument('batch', type=int, default = 1)
 @click.argument('epochs', type=int, default = 1)
 @click.argument('step_per_epoch', type=int, default = 100)
 
@@ -55,7 +55,7 @@ def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size,
 
 	## ------ Data Loader ------
 	logger.info('IdWordDataLoader')
-	sentence_loader = SentenceIdWordDataLoader(word_data, batch, step_per_epoch)
+	sentence_loader = OneSentenceIdWordDataLoader(word_data, batch, step_per_epoch)
 
 	x,y  = next(sentence_loader.generate())
 	print(x)

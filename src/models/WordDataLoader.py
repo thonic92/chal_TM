@@ -86,6 +86,31 @@ class SentenceIdWordDataLoader(WordDataLoader):
 			yield X, Y
 
 
+class OneSentenceIdWordDataLoader(WordDataLoader):
+
+	def generate(self):
+
+		while True:
+			if self.current_idx >= len(self.word_data.token_final):
+				self.current_idx = 0
+
+			max_len = len(self.word_data.token_final[self.current_idx])
+			X = np.zeros((self.batch_size, max_len))
+			Y = np.zeros((self.batch_size, max_len, self.word_data.getVocabularyLength()))
+
+			x = self.word_data.token_final[self.current_idx][:-1]
+			x = [self.word_data.ref_word_to_id[word] for word in x]
+			X[0, :(len(x))] = x
+
+			y = self.word_data.token_final[self.current_idx][1:]
+			y = [self.word_data.ref_word_to_id[word] for word in y]
+			y = to_categorical(y, num_classes = self.word_data.getVocabularyLength())
+			Y[0, :(len(x)), :] = y
+
+			self.current_idx += 1
+
+			yield X, Y
+
 class SentenceOneHotIdWordDataLoader(WordDataLoader):
 
 	def generate(self):

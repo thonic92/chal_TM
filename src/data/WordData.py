@@ -2,16 +2,13 @@ import pandas as pd
 from keras.utils import to_categorical
 import numpy as np
 
-## Class pour génrer les tokens en mode flat
-## - virer les tokens inutiles
-## - les tweets trop similaire ? (cf thomas)
 
 class WordData:
 
-	def __init__(self, tokens, tweets, nb_keep, keep_unknown = True, start_and_stop = True):
+	def __init__(self, tokens, token_id_keep, nb_keep, keep_unknown = True, start_and_stop = True):
 
 		self.tokens = tokens
-		self.tweets = tweets
+		self.token_id_keep = token_id_keep
 		self.nb_keep = nb_keep
 		self.token_keep = None
 		self.UNKNOWN = '_UNKNOWN_'
@@ -27,6 +24,9 @@ class WordData:
 		self.computeWordToId()
 
 	def initListToken(self):
+
+		if self.token_id_keep is not None:
+			self.tokens = tokens_new = [self.tokens[i] for i in self.token_id_keep]
 
 		tokens_flat = [token for x in self.tokens for token in x]
 		tokens_df = pd.DataFrame(tokens_flat, columns = ['token'])

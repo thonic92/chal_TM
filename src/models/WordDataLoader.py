@@ -25,7 +25,7 @@ class IdWordDataLoader(WordDataLoader):
 		self.num_steps = num_steps
 		self.skip_step = skip_step
 		
-		super().__init()
+		super().__init__(word_data, batch_size, step_per_epoch)
 
 	def generate(self):
 		max_len = max([len(el) for el in self.word_data.token_final])

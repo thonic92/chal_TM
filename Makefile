@@ -29,6 +29,9 @@ word2vec:
 word2vec_s:
 	$(PYTHON_INTERPRETER) src/process_word2vec.py save_vectors data/interim models/word2vec models/word2vec 0 100 4 200 800 3 final_model
 
+simple_lstm:
+	$(PYTHON_INTERPRETER) src/process_simple_lstm.py run data/interim models/simpleLSTMModel/version2 models/simpleLSTMModel/version2 10000 200 20 5 4 1 100
+
 
 #################################################################################
 # FLOYD USER COMMANDS                                                           #

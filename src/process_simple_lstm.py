@@ -32,7 +32,7 @@ from keras.models import load_model
 
 @click.argument('initial_epoch', type=int, default = 0)
 
-@click.argument('model_name', type=str, default = None)
+@click.argument('model_name', type=str, default = "")
 def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size, num_step, skip_step, batch, epochs, step_per_epoch, initial_epoch, model_name):
 
 	logger = logging.getLogger(__name__)
@@ -42,16 +42,9 @@ def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size,
 	with open('{}/tokens_2.json'.format(tokens_dir)) as f:
 		tokens = json.load(f)
 
-	## ------ lecture des tweets.csv ------
-	tweets_tokens = pd.read_csv('{}/tweets_2.csv'.format(tokens_dir))
-	tokens_ss_pbm = tweets_tokens[(tweets_tokens.count_hashtag_ano <= 2)  & (tweets_tokens.count_mention_ano <= 1)].index
-
     ## ------ lecture des tokens à garder ------
 	with open('{}/tokens_id_keep_2.json'.format(tokens_dir)) as f:
 		tokens_id_keep = json.load(f)
-
-	tokens_id_keep = list(set(tokens_id_keep) & set(tokens_ss_pbm))
-	print(len(tokens_id_keep))
 
 	## ------ Class WordData ------
 	logger.info('Class WordData')
@@ -65,7 +58,7 @@ def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size,
 	## ------ LSTM model ------
 	logger.info('LSTM model')
 	lstm_model = simpleLSTMModel(model_dir, word_data.getVocabularyLength(), lstm_hidden_size, (None, None))
-	if model_name is not None:
+	if model_name != "":
 		lstm_model.model = load_model(model_dir + '/' + model_name + '.hdf5')
 
 	## ------ LSTM model: summary ------

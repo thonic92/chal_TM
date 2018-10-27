@@ -13,6 +13,7 @@ from src.models.TweetGenerator import TweetGenerator
 from src.models.GenerateTweetCallback import GenerateTweetCallback
 
 from keras.callbacks import LambdaCallback
+from keras.models import load_model
 
 @click.command()
 @click.argument('goal', type=str, default = "run")
@@ -29,8 +30,10 @@ from keras.callbacks import LambdaCallback
 @click.argument('epochs', type=int, default = 1)
 @click.argument('step_per_epoch', type=int, default = 100)
 
-@click.argument('model_name', type=str, default = "final_model")
-def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size, num_step, skip_step, batch, epochs, step_per_epoch, model_name):
+@click.argument('initial_epoch', type=int, default = 0)
+
+@click.argument('model_name', type=str, default = None)
+def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size, num_step, skip_step, batch, epochs, step_per_epoch, initial_epoch, model_name):
 
 	logger = logging.getLogger(__name__)
 
@@ -62,6 +65,8 @@ def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size,
 	## ------ LSTM model ------
 	logger.info('LSTM model')
 	lstm_model = simpleLSTMModel(model_dir, word_data.getVocabularyLength(), lstm_hidden_size, (None, None))
+	if model_name is not None:
+		lstm_model.model = load_model(model_dir + '/' + model_name + '.hdf5')
 
 	## ------ LSTM model: summary ------
 	logger.info('LSTM model: summary')
@@ -76,7 +81,7 @@ def main(goal, tokens_dir, save_dir, model_dir, nb_token_keep, lstm_hidden_size,
 		## ------ Trainer ------
 		logger.info('Trainer')
 		floydhub_log_callback = LambdaCallback(on_epoch_end = lambda epoch, logs: print('{"metric": "accuracy", "value":'+ str(logs['categorical_accuracy']) +' }'+' '+'{"metric": "loss", "value":'+ str(logs['loss']) +' }'))
-		trainer = ModelTrainer(model = lstm_model, data_loader = sentence_loader, epochs =  epochs, callbacks = [floydhub_log_callback, generate_tweet_callback])
+		trainer = ModelTrainer(model = lstm_model, data_loader = sentence_loader, epochs =  epochs, initial_epoch = initial_epoch, callbacks = [floydhub_log_callback, generate_tweet_callback])
 
 		try:
 			trainer.train()

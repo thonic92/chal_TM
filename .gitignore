@@ -111,7 +111,6 @@ data/interim/*.json
 
 models/*
 
-docs/*
 
 # floyd
 .floydexpt

@@ -17,6 +17,42 @@ HAS_CONDA=True
 endif
 
 #################################################################################
+# USER COMMANDS                                                                 #
+#################################################################################
+
+tokenize:
+	$(PYTHON_INTERPRETER) src/data/main.py
+
+word2vec:
+	$(PYTHON_INTERPRETER) src/process_word2vec.py run data/interim models/word2vec models/word2vec 0 100 4 200 800 3
+
+word2vec_s:
+	$(PYTHON_INTERPRETER) src/process_word2vec.py save_vectors data/interim models/word2vec models/word2vec 0 100 4 200 800 3 final_model
+
+simple_lstm:
+	$(PYTHON_INTERPRETER) src/process_simple_lstm.py run data/interim models/simpleLSTMModel/version3 models/simpleLSTMModel/version3 0 300 20 3 16 500 200
+
+lstm_sent:
+	$(PYTHON_INTERPRETER) src/process_lstm_sent.py run data/interim models/lstm_sent/version1 models/lstm_sent/version1 0 100 1 10 100
+
+
+#################################################################################
+# FLOYD USER COMMANDS                                                           #
+#################################################################################
+
+finstall:
+	$(PYTHON_INTERPRETER) setup.py install
+
+fword2vec: finstall
+	$(PYTHON_INTERPRETER) src/process_word2vec.py /tokens /output 0 100 4 300 600 2
+
+fword2vec_s: finstall
+	$(PYTHON_INTERPRETER) src/process_word2vec.py save_vectors /tokens /output /dir_model 0 100 4 300 600 2 model-260
+
+frun:
+	floyd run --cpu --env tensorflow-1.10 --data prise6/datasets/chal_tm_tokens/2:/tokens --data prise6/projects/chal_tm/16/output:/dir_model 'make fword2vec_s'
+
+#################################################################################
 # COMMANDS                                                                      #
 #################################################################################
 

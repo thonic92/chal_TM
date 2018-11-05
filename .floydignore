@@ -1,0 +1,67 @@
+
+# Directories and files to ignore when uploading code to floyd
+
+.git
+.eggs
+eggs
+lib
+lib64
+parts
+sdist
+var
+*.pyc
+*.swp
+.DS_Store
+
+
+# dirs
+
+## datas
+data/external/*.csv
+data/external/*.json
+data/interim/*.csv
+data/interim/*.json
+
+## models
+*.hdf5
+models/word2vec/vectors.txt
+
+## notebooks
+notebooks
+
+## autres
+dist
+
+# files
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST

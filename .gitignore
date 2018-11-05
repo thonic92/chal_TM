@@ -108,3 +108,13 @@ data/external/*.csv
 data/external/*.json
 data/interim/*.csv
 data/interim/*.json
+
+models/*
+
+docs/*
+
+# floyd
+.floydexpt
+floyd.yml
+data/interim/.floyddata
+
